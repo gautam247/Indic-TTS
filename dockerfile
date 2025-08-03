@@ -1,34 +1,55 @@
 # Use Python 3.11.5
 FROM python:3.11.5
 
-# Set working directory
 WORKDIR /app
 
-# Avoid Python bytecode files & enable unbuffered logs
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Install system dependencies needed for librosa, soundfile, etc.
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     libsndfile1 \
     git \
+    wget \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (to use Docker cache)
+# Install gdown for Google Drive downloads
+RUN pip install --no-cache-dir gdown
+
+# Copy requirements first
 COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the project
+# Copy application files
 COPY . .
 
-# Ensure models folder exists (if you plan to mount or pre-download)
-RUN mkdir -p models/v1/hi/fastpitch models/v1/hi/hifigan
+# Create target folders
+RUN mkdir -p models/v1/hi/fastpitch && \
+    mkdir -p models/v1/hi/hifigan
+
+# Build argument for controlling model download (default: true) gautam please change it , if not testing
+ARG DOWNLOAD_MODELS=true
+ENV DOWNLOAD_MODELS=${DOWNLOAD_MODELS}
+
+# Conditionally download models
+RUN if [ "$DOWNLOAD_MODELS" = "true" ]; then \
+    echo "📥 Downloading FastPitch models..." && \
+    gdown --folder https://drive.google.com/drive/folders/1ZKBX16Q_ZjIt7F-Iy41Pmot8LdJc801P -O models/v1/hi/fastpitch && \
+    echo "✅ FastPitch models downloaded:" && \
+    ls -lh models/v1/hi/fastpitch && \
+    echo "📥 Downloading HiFiGAN models..." && \
+    gdown --folder https://drive.google.com/drive/folders/1TA1lQdD96a05FwpGfghJwWwZ-clu8SN0 -O models/v1/hi/hifigan && \
+    echo "✅ HiFiGAN models downloaded:" && \
+    ls -lh models/v1/hi/hifigan; \
+    else \
+    echo "⚠️ Skipping model download (DOWNLOAD_MODELS=$DOWNLOAD_MODELS)"; \
+    fi
 
 # Expose Flask port
 EXPOSE 5000
 
-# Run Flask app on 0.0.0.0 so Railway can access it
+# Start Flask app
 CMD ["python", "app.py"]
