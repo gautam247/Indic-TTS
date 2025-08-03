@@ -1,0 +1,117 @@
+index.html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MaitriTV Hindi TTS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: url('https://images.unsplash.com/photo-1525182008055-f88b95ff7980') no-repeat center center/cover;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        h2 {
+            margin-top: 30px;
+            font-size: 28px;
+            text-shadow: 2px 2px 4px #000;
+        }
+        textarea {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            resize: none;
+        }
+        label {
+            margin: 0 10px;
+            font-size: 18px;
+        }
+        button {
+            padding: 12px 25px;
+            background-color: #ff9800;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+        }
+        button:hover {
+            background-color: #e68a00;
+        }
+        #loader {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9999;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #loader span {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <h2>🎤 MaitriTV – Bring Your Hindi Words to Life!</h2>
+    <form action="/synthesize" method="post" onsubmit="showLoader()">
+        <textarea name="text" rows="4" placeholder="Type your magical Hindi words here..." required></textarea><br><br>
+        <label>
+            <input type="radio" name="speaker" value="male" checked> 🎙 Male Voice
+        </label>
+        <label>
+            <input type="radio" name="speaker" value="female"> 🎤 Female Voice
+        </label><br><br>
+        <button type="submit">✨ Generate My Audio ✨</button>
+    </form>
+
+    <!-- Loader -->
+    <div id="loader">
+        <span>🎶 Generating your audio… Please wait 🎶</span>
+    </div>
+
+    <script>
+        function showLoader() {
+            document.getElementById('loader').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+
+
+result.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text to Speech Result</title>
+</head>
+<body>
+    <h2>Voice Synthesis Complete</h2>
+
+    <audio controls>
+        <source src="{{ url_for('static', filename=audio_file) }}" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+    <br><br>
+
+    <a href="{{ url_for('static', filename=audio_file) }}" download>
+        <button>Download</button>
+    </a>
+
+    <br><br>
+    <a href="/">
+        <button>Generate Again</button>
+    </a>
+</body>
+</html>

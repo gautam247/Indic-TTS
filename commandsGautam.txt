@@ -1,0 +1,19 @@
+tts --text "हेलो दोस्तों आप लोग कैसे हैं" ^
+--model_path "models/v1/hi/fastpitch/best_model.pth" ^
+--config_path "models/v1/hi/fastpitch/config.json" ^
+--vocoder_path "models/v1/hi/hifigan/best_model.pth" ^
+--vocoder_config_path "models/v1/hi/hifigan/config.json" ^
+--speaker_idx "female" ^
+--out_path "hindi_female.wav"
+
+
+
+tts --text "हेलो दोस्तों आप लोग कैसे हैं" ^
+--model_path "models/v1/hi/fastpitch/best_model.pth" ^
+--config_path "models/v1/hi/fastpitch/config.json" ^
+--vocoder_path "models/v1/hi/hifigan/best_model.pth" ^
+--vocoder_config_path "models/v1/hi/hifigan/config.json" ^
+--speaker_idx "male" ^
+--out_path "hindi.wav"
+
+
