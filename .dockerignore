@@ -1,0 +1,12 @@
+# Ignore local venv
+.venv
+venv
+# Ignore cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+.ipynb_checkpoints
+# Ignore large model folders (even if empty in repo)
+models/
